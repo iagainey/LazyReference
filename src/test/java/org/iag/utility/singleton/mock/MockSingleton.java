@@ -1,5 +1,7 @@
 package org.iag.utility.singleton.mock;
 
+import java.util.function.Supplier;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.iag.utility.singleton.LooseSingleton;
@@ -12,19 +14,36 @@ public class MockSingleton {
 
 	public static < O >
 		   @NonNull LooseSingleton<O>
-		   nullBuild(){
+		   emptyBuild(){
 		return build( (O) null );
 	}
 
+	/**
+	 * Spy Mock, where only the setters are disabled.
+	 * 
+	 * @param obj
+	 * @return
+	 */
 	public static < O >
 		   @NonNull LooseSingleton<O>
 		   build( @Nullable O obj ){
+		return build( ()-> obj );
+	}
+
+	/**
+	 * Spy Mock, where only the setters are disabled.
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static < O >
+		   @NonNull LooseSingleton<O>
+		   build( @Nullable Supplier<? extends O> getter ){
 		@SuppressWarnings( "unchecked" )
 		final LooseSingleton<O> singleton = Mockito.mock( LooseSingleton.class,
-														  Mockito.CALLS_REAL_METHODS );
-		Mockito.doReturn( obj )
-			   .when( singleton )
-			   .get();
+														  Mockito.withSettings()
+																 .useConstructor( getter )
+																 .defaultAnswer( Mockito.CALLS_REAL_METHODS ) );
 		Mockito.doReturn( false )
 			   .when( singleton )
 			   .set( ArgumentMatchers.any() );
