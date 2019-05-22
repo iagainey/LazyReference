@@ -214,7 +214,7 @@ public abstract class LooseSingleton< V > {
 
 	/**
 	 * @see java.lang.Object#toString()
-	 * @return [{get()}]
+	 * @return (get())
 	 */
 	public @NonNull String
 		   toString(){
@@ -240,8 +240,8 @@ public abstract class LooseSingleton< V > {
 	 * 
 	 * @param o
 	 * @return Calls {@link Object#equals(Object)} of the internal value to the
-	 *         argument. Only if argument {@code o} is the same to this, will
-	 *         {@link #get()} not be called..
+	 *         argument. Only if argument {@code o} is the same to this,
+	 *         {@link #get()} not be called.
 	 */
 	public boolean
 		   equals( @Nullable Object o ){
