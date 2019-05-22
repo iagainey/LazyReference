@@ -1,55 +1,57 @@
 package org.iag.utility.singleton.mock;
 
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.iag.utility.singleton.LooseSingleton;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 
-public class MockSingleton {
-	private MockSingleton(){
-	};
+public class MockSingleton< T >
+						  extends
+						  LooseSingleton<T> {
 
+	public MockSingleton( T obj ){
+		this( ()-> obj );
+	}
+
+	public MockSingleton( @NonNull Supplier<? extends T> getter ){
+		super( getter );
+	}
+
+	@Override
+	protected @NonNull Reference<T>
+			  makeReference( @Nullable T value ){
+		return new SoftReference<>( value );
+	}
+
+	@Override
+	public boolean
+		   set( @Nullable T value ){
+		return false;
+	}
+
+	@Override
+	public boolean
+		   unsafeSet( @Nullable T value ){
+		return false;
+	}
+
+	@Override
+	public void
+		   clear(){
+		super.clear();
+	}
+
+	/**
+	 * 
+	 * @return a {@link LooseSingleton}, where the setters are disabled and
+	 *         can never have a value.
+	 */
 	public static < O >
 		   @NonNull LooseSingleton<O>
 		   emptyBuild(){
-		return build( (O) null );
-	}
-
-	/**
-	 * Spy Mock, where only the setters are disabled.
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public static < O >
-		   @NonNull LooseSingleton<O>
-		   build( @Nullable O obj ){
-		return build( ()-> obj );
-	}
-
-	/**
-	 * Spy Mock, where only the setters are disabled.
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public static < O >
-		   @NonNull LooseSingleton<O>
-		   build( @Nullable Supplier<? extends O> getter ){
-		@SuppressWarnings( "unchecked" )
-		final LooseSingleton<O> singleton = Mockito.mock( LooseSingleton.class,
-														  Mockito.withSettings()
-																 .useConstructor( getter )
-																 .defaultAnswer( Mockito.CALLS_REAL_METHODS ) );
-		Mockito.doReturn( false )
-			   .when( singleton )
-			   .set( ArgumentMatchers.any() );
-		Mockito.doReturn( false )
-			   .when( singleton )
-			   .unsafeSet( ArgumentMatchers.any() );
-		return singleton;
+		return new MockSingleton<>( (O) null );
 	}
 }
