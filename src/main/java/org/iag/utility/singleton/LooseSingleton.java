@@ -209,7 +209,7 @@ public abstract class LooseSingleton< V > {
 	 */
 	public void
 		   clear(){
-		this.value.lazySet( null );
+		this.value.set( null );
 	}
 
 	/**
