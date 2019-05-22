@@ -218,9 +218,8 @@ public abstract class LooseSingleton< V > {
 	 */
 	public @NonNull String
 		   toString(){
-		return String.format( "[%s]",
-							  this.get()
-								  .toString() );
+		return String.format( "(%s)",
+							  this.get() );
 	}
 
 	/**
